@@ -4,6 +4,12 @@ import data from './data';
 
 
 class ToDo extends Component{
+    state = {
+            myData:[]
+        }
+    
+    
+    
     createTr = () => {
         let trArr = ['Game Number',
             'Status',
@@ -16,11 +22,15 @@ class ToDo extends Component{
         ];
         let trArr2 = [];
         for(let i = 0; i < trArr.length; i++){
-          trArr2.push(<Th trName = {trArr[i]}/>)
+          trArr2.push(<Th key ={i} trName = {trArr[i]}/>)
         }
         return trArr2
 
+    
     }
+   
+
+   
     getData = () => {
         fetch('http://rest.learncode.academy/api/learncode/friends', {
             method: 'POST',
@@ -29,22 +39,38 @@ class ToDo extends Component{
           })
           .then (info => info.json())
           .then ((info) => {
-               console.log(info)
+               this.setState({
+                   myData: info
+               })
+              
           });
-          
+        this.createTd = () =>{
+            let trTag =[];
+            for(let i = 0; this.state.myData.length > i; i++ ){
+               let tdTag =[];
+               for (let j in this.state.myData[i] ){
+                   tdTag.push(<td key = {j}>{this.state.myData[i][j]}</td>)
+               }
+               trTag.push(<tr key = {i}>{tdTag}</tr>)
+            }
+            return trTag;
+        }
+          return this.createTd();
     }
     render(){
         
         return( 
+            
             <Fragment>
                 <table>
                     <tbody>
                         <tr>
                     {this.createTr()}
                         </tr>
+                        {this.getData()}
                     </tbody>
                 </table>
-                <button onClick = {this.getData}>Reload</button>
+                <button>Reload</button>
             </Fragment>
         );
     }
